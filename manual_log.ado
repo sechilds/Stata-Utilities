@@ -6,7 +6,7 @@ program manual_log
 	
 	local fileprefix "${manuallogpath}${locationname}/"
 	ensuredir "`fileprefix'"
-	if "${datestringp)"=="" {
+	if "${datestringp}"=="" {
 		global datestringp "$S_DATE"
 	} 
 	// global datestring : subinstr global datestring " " "", all
