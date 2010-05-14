@@ -4,8 +4,14 @@ program prettylabels
 	syntax [varlist] [, saving(string) replace numlabel(namelist)]
 	// syntax [namelist(name=varlist)] [using] [, saving(string) replace numlabel(namelist)]
 	version 10.1
-	
-	display _newline as text "Running " as result "\$Id: prettylabels.ado 658 2009-08-18 15:41:09Z mesa $"
+
+	/*
+		14MAY2010:
+
+		Be careful with this file. It will rewrite your
+		variable and value labels. It's an old file, and
+		I haven't used it in a year or so.
+	*/
 	
 	// Specifying a dataset is optional. If you specifiy nothing, it shouldn't load anything.
 	// capture use `using', clear
