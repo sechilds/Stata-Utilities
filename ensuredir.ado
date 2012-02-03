@@ -23,7 +23,7 @@ program ensuredir
 	}
 	else {
 		local confirmname "`dirname'"
-	} 
+	}
 	capture confirm new file `confirmname'
 	if _rc==0 { 
 		mkdir `dirname'

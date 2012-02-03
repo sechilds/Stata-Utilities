@@ -16,6 +16,8 @@ program manual_log
 	}
 	else {
 		local fileprefix "`manuallogpath'`locationname'/"
+		ensuredir "`logpath'"
+		ensuredir "`manuallogpath'"
 	}
 	ensuredir "`fileprefix'"
 	local datestringp "$S_DATE"
