@@ -2,7 +2,7 @@
 
 capture program drop manual_log
 program manual_log
-	syntax using/ [, APPend REPlace NAMe(string)]
+	syntax using/ [, APPend REPlace NAMe(string) path(string)]
 
 	quietly findfile su_user_locals.do
 	include `r(fn)'
@@ -10,8 +10,13 @@ program manual_log
 	if missing("`name'") {
 		local name "manual"
 	}
-	
-	local fileprefix "`manuallogpath'`locationname'/"
+
+	if !missing(`"`path'"') {
+		local fileprefix `"`path'"'	
+	}
+	else {
+		local fileprefix "`manuallogpath'`locationname'/"
+	}
 	ensuredir "`fileprefix'"
 	local datestringp "$S_DATE"
 	tokenize `datestringp'
