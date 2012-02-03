@@ -1,21 +1,25 @@
+// manual_log.ado
+
 capture program drop manual_log
 program manual_log
-	syntax using/ [, APPend REPlace NAMe(passthru)]
+	syntax using/ [, APPend REPlace NAMe(string)]
+
+	quietly findfile su_user_locals.do
+	include `r(fn)'
+
+	if missing("`name'") {
+		local name "manual"
+	}
 	
-	local fileprefix "${manuallogpath}${locationname}/"
+	local fileprefix "`manuallogpath'`locationname'/"
 	ensuredir "`fileprefix'"
-	if "${datestringp}"=="" {
-		global datestringp "$S_DATE"
-	} 
-	// global datestring : subinstr global datestring " " "", all
-	tokenize $datestringp
+	local datestringp "$S_DATE"
+	tokenize `datestringp'
 	local day = string(`1',"%02.0f") // leading zero
 	local month `2'
 	local year `3'
-	if "${timestring}"=="" { 
-		global timestring "$S_TIME"
-	} 
-	local ml_timestring : subinstr global timestring ":" "_", all
+	local timestring "$S_TIME"
+	local ml_timestring : subinstr local timestring ":" "_", all
 	local logfilename "`fileprefix'`year'/"
 	ensuredir "`logfilename'"
 	local logfilename "`logfilename'`month'/"
@@ -25,6 +29,11 @@ program manual_log
 	local logfilename "`logfilename'`ml_timestring'/"
 	ensuredir "`logfilename'"
 	local logfilename "`logfilename'`using'"
-	log using "`logfilename'", `append' `replace' text `name'
+	capture log close `name'
+	capture cmdlog close
+	log using "`logfilename'", `append' `replace' text name(`name')
 	cmdlog using "`logfilename' cmd", `append' `replace'
 end
+
+// manual_log.ado
+

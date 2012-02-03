@@ -2,7 +2,7 @@
 
 /*
 	This Stata do file will configure a new installation
-	of the do files.
+	of the Stata-Utilities do files.
 */
 
 capture program drop check_path_ignored
@@ -33,18 +33,18 @@ capture program drop configure_paths
 program configure_paths
 	display _newline
 	display as text "Welcome to the Stata do file configuration utility."
-	display as text "We will setup a " as result " user_locals.do" as text "  file for you."
+	display as text "We will setup a " as result " su_user_locals.do" as text "  file for you."
 	display _newline _newline
 
 	/*
-		If there is an existing user_locals.do file, back it up.
+		If there is an existing su_user_locals.do file, back it up.
 		
 		I'm also going to backup the .gitignore file. 
 	*/
-	capture confirm file do/user_locals.do
+	capture confirm file do/su_user_locals.do
 	if !_rc {
-		copy do/user_locals.do do/user_locals_backup.do, replace
-		rm do/user_locals.do
+		copy do/su_user_locals.do do/su_user_locals_backup.do, replace
+		rm do/su_user_locals.do
 	}
 	capture confirm file .gitignore
 	if !_rc {
@@ -54,11 +54,11 @@ program configure_paths
 	tempname myfile
 	tempname gitignore
 	// tempname gitignore_backup
-	file open `myfile' using do/user_locals.do, write text replace
+	file open `myfile' using do/su_user_locals.do, write text replace
 	file open `gitignore' using .gitignore, write text append
 	// file open `gitignore_backup' using gitignore_backup.txt, read text
 
-	file write `myfile' "// user_locals.do" _newline _newline
+	file write `myfile' "// su_user_locals.do" _newline _newline
 
 	display as text "*** Location Name ***"
 	display as text "Please choose a name for this particularl installation of the do files."
@@ -80,15 +80,6 @@ program configure_paths
 		global projectdirectory "${projectdirectory}`c(dirsep)'"
 	}
 	file write `myfile' `"local projectdirectory "${projectdirectory}""' _newline
-
-	display _newline _newline
-	display as text "*** Stata Utilities ***"
-	display as text "Please enter the location of the Stata Utilities directory on your computer."
-	global statautil ""
-	while "${statautil}"=="" {
-		display _newline as text "Stata Utilities Directory:" _newline _request(statautil)
-	}
-	file write `myfile' `"local statautil "${statautil}""' _newline
 
 	display _newline _newline
 	display as text "*** Data Path ***"
@@ -119,41 +110,12 @@ program configure_paths
 		file write `gitignore' "`data_ignore'" _newline
 	} 
 
-
-	display _newline _newline
-	display as text "*** Work Data Path ***"
-	display as text "Working data files."
-	display _newline as text "Work Data directory (${projectdirectory}data`c(dirsep)'work`c(dirsep)'):" _newline _request(workdatapath)
-	if "${workdatapath}"=="" {
-		global workdatapath "${projectdirectory}data`c(dirsep)'work`c(dirsep)'"
-	}
-	file write `myfile' `"local workdatapath "${workdatapath}""' _newline
-	local data_ignore = subinstr(`"${workdatapath}"',"${projectdirectory}","",1)
-	check_path_ignored `data_ignore' using gitignore_backup.txt
-	if "`r(dupe)'"=="0" { 
-		file write `gitignore' "`data_ignore'" _newline
-	} 
-
-	display _newline _newline
-	display as text "*** User Data Path ***"
-	display as text "Additional files created by the user."
-	display _newline as text "User Data directory (${projectdirectory}data`c(dirsep)'user`c(dirsep)'):" _newline _request(userdatapath)
-	if "${userdatapath}"=="" {
-		global userdatapath "${projectdirectory}data`c(dirsep)'user`c(dirsep)'"
-	}
-	file write `myfile' `"local userdatapath "${userdatapath}""' _newline
-	local data_ignore = subinstr(`"${userdatapath}"',"${projectdirectory}","",1)
-	check_path_ignored `data_ignore' using gitignore_backup.txt
-	if "`r(dupe)'"=="0" { 
-		file write `gitignore' "`data_ignore'" _newline
-	} 
-
 	display _newline _newline
 	display as text "*** Log Path ***"
 	display as text "Directory for storing Stata logs."
-	display _newline as text "Log paths (${projectdirectory}data`c(dirsep)'log`c(dirsep)'):" _newline _request(logdatapath)
+	display _newline as text "Log paths (${projectdirectory}log`c(dirsep)'):" _newline _request(logdatapath)
 	if "${logdatapath}"=="" {
-		global logdatapath "${projectdirectory}data`c(dirsep)'log`c(dirsep)'"
+		global logdatapath "${projectdirectory}log`c(dirsep)'"
 	}
 	file write `myfile' `"local logpath "${logdatapath}""' _newline
 	local data_ignore = subinstr(`"${logdatapath}"',"${projectdirectory}","",1)
@@ -165,9 +127,9 @@ program configure_paths
 	display _newline _newline
 	display as text "*** Manual Log Path ***"
 	display as text "Directory for storing Stata manual logs."
-	display _newline as text "Log paths (${projectdirectory}data`c(dirsep)'log`c(dirsep)'manual`c(dirsep)'):" _newline _request(manuallogpath)
+	display _newline as text "Log paths (${projectdirectory}log`c(dirsep)'manual`c(dirsep)'):" _newline _request(manuallogpath)
 	if "${manuallogpath}"=="" {
-		global manuallogpath "${projectdirectory}data`c(dirsep)'log`c(dirsep)'manual`c(dirsep)'"
+		global manuallogpath "${projectdirectory}log`c(dirsep)'manual`c(dirsep)'"
 	}
 	file write `myfile' `"local manuallogpath "${manuallogpath}""' _newline
 	local data_ignore = subinstr(`"${manuallogpath}"',"${projectdirectory}","",1)
@@ -179,9 +141,9 @@ program configure_paths
 	display _newline _newline
 	display as text "*** Output Path ***"
 	display as text "Generated output will be created here."
-	display _newline as text "Output directory (${projectdirectory}data`c(dirsep)'output`c(dirsep)'):" _newline _request(outputpath)
+	display _newline as text "Output directory (${projectdirectory}'output`c(dirsep)'):" _newline _request(outputpath)
 	if "${outputpath}"=="" {
-		global outputpath "${projectdirectory}data`c(dirsep)'output`c(dirsep)'"
+		global outputpath "${projectdirectory}output`c(dirsep)'"
 	}
 	file write `myfile' `"local outputpath "${outputpath}""' _newline
 	local data_ignore = subinstr(`"${outputpath}"',"${projectdirectory}","",1)
@@ -196,15 +158,15 @@ program configure_paths
 
   display _newline as text "Thank you for setting up your configuration file."
   display _newline as text "The contents of your configuration file are listed below:" _newline
-  display as text "*** user_locals.do BEGINS *****"
-  file open `myfile' using "do/user_locals.do", read text
+  display as text "*** su_user_locals.do BEGINS *****"
+  file open `myfile' using "do/su_user_locals.do", read text
   file read `myfile' line
   while r(eof)==0 { 
     display `"`line'"'
     file read `myfile' line
   }
   file close `myfile'
-  display as text "*** user_locals.do ENDS *****"
+  display as text "*** su_user_locals.do ENDS *****"
 
   display _newline
   display as text "Please ensure that your data directories are in the " as result ".gitignore" as text " file." _newline
