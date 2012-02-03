@@ -2,8 +2,6 @@ capture program drop manual_log
 program manual_log
 	syntax using/ [, APPend REPlace NAMe(passthru)]
 	
-	display _newline as text "Running " as result "\$Id: manual_log.ado 658 2009-08-18 15:41:09Z mesa $"
-	
 	local fileprefix "${manuallogpath}${locationname}/"
 	ensuredir "`fileprefix'"
 	if "${datestringp}"=="" {

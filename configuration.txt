@@ -1,0 +1,22 @@
+configuration.txt
+
+University of Ottawa Institutional Data -- Retention Project
+
+File created 26APR2011.
+
+	1. Upon checking this file out of the repository, switch to the main
+directory and run configure.do in Stata. This Stata do file with walk
+you through setting up a user_locals.do file that controls where all the
+included programs will store logs and data files. user_locals.do files
+are ignored by git. If there is an existing user_locals.do file, a
+backup will be created. (The backup is also ignored by git.)
+
+	2. In order to ensure that data does not get committed to the git
+repository, the configuration program will add the paths of the data
+directory files to the .gitignore file. (A backup of the .gitignore file
+will be created.) These changes will need to be committed to the repository.
+
+	3. In order to run many of the table display programs, you must
+compile some mata code by running master_mata.do.
+
+
