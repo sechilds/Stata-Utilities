@@ -1,2 +1,9 @@
 *.swp
+log/
+log/manual/
+output/
+gitignore_backup.txt
+su_user_locals.do
+su_user_locals_backup.do
+su_user_locals_backup.txt
 

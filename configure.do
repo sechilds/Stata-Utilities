@@ -41,10 +41,10 @@ program configure_paths
 		
 		I'm also going to backup the .gitignore file. 
 	*/
-	capture confirm file do/su_user_locals.do
+	capture confirm file su_user_locals.do
 	if !_rc {
-		copy do/su_user_locals.do do/su_user_locals_backup.do, replace
-		rm do/su_user_locals.do
+		copy su_user_locals.do su_user_locals_backup.do, replace
+		rm su_user_locals.do
 	}
 	capture confirm file .gitignore
 	if !_rc {
@@ -54,7 +54,7 @@ program configure_paths
 	tempname myfile
 	tempname gitignore
 	// tempname gitignore_backup
-	file open `myfile' using do/su_user_locals.do, write text replace
+	file open `myfile' using su_user_locals.do, write text replace
 	file open `gitignore' using .gitignore, write text append
 	// file open `gitignore_backup' using gitignore_backup.txt, read text
 
@@ -80,35 +80,6 @@ program configure_paths
 		global projectdirectory "${projectdirectory}`c(dirsep)'"
 	}
 	file write `myfile' `"local projectdirectory "${projectdirectory}""' _newline
-
-	display _newline _newline
-	display as text "*** Data Path ***"
-	display as text "All the data these do file use and generate will do into this directory."
-	display as text "Logs and results will be generated here as well."
-	display _newline as text "Data directory (${projectdirectory}data`c(dirsep)'):" _newline _request(datapath)
-	if "${datapath}"=="" {
-		global datapath "${projectdirectory}data`c(dirsep)'"
-	}
-	file write `myfile' `"local datapath "${datapath}""' _newline
-	local data_ignore = subinstr(`"${datapath}"',"${projectdirectory}","",1)
-	check_path_ignored `data_ignore' using gitignore_backup.txt
-	if "`r(dupe)'"=="0" { 
-		file write `gitignore' "`data_ignore'" _newline
-	} 
-
-	display _newline _newline
-	display as text "*** Source Data Path ***"
-	display as text "Original source data."
-	display _newline as text "Source Data directory (${projectdirectory}data`c(dirsep)'source`c(dirsep)'):" _newline _request(sourcedatapath)
-	if "${sourcedatapath}"=="" {
-		global sourcedatapath "${projectdirectory}data`c(dirsep)'source`c(dirsep)'"
-	}
-	file write `myfile' `"local sourcedatapath "${sourcedatapath}""' _newline
-	local data_ignore = subinstr(`"${sourcedatapath}"',"${projectdirectory}","",1)
-	check_path_ignored `data_ignore' using gitignore_backup.txt
-	if "`r(dupe)'"=="0" { 
-		file write `gitignore' "`data_ignore'" _newline
-	} 
 
 	display _newline _newline
 	display as text "*** Log Path ***"
@@ -141,7 +112,7 @@ program configure_paths
 	display _newline _newline
 	display as text "*** Output Path ***"
 	display as text "Generated output will be created here."
-	display _newline as text "Output directory (${projectdirectory}'output`c(dirsep)'):" _newline _request(outputpath)
+	display _newline as text "Output directory (${projectdirectory}output`c(dirsep)'):" _newline _request(outputpath)
 	if "${outputpath}"=="" {
 		global outputpath "${projectdirectory}output`c(dirsep)'"
 	}
@@ -159,7 +130,7 @@ program configure_paths
   display _newline as text "Thank you for setting up your configuration file."
   display _newline as text "The contents of your configuration file are listed below:" _newline
   display as text "*** su_user_locals.do BEGINS *****"
-  file open `myfile' using "do/su_user_locals.do", read text
+  file open `myfile' using "su_user_locals.do", read text
   file read `myfile' line
   while r(eof)==0 { 
     display `"`line'"'
