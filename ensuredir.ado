@@ -4,8 +4,6 @@ program ensuredir
 	version 10
 	args dirname
 	
-	display _newline as text "Running " as result "\$Id: ensuredir.ado 1394 2010-01-27 14:50:32Z mesa $"
-	
 	/*
 		Check to see if the directory name passed to
 		this program ends with a slash. If so, we
